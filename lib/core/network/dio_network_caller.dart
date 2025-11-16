@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:network_call/core/network/network_config.dart';
+import 'package:network_call/core/network/network_interface.dart';
 import 'package:network_call/model/error_response.dart';
 import 'package:network_call/model/network_response.dart';
-import 'package:network_call/services/network/network_config.dart';
-import 'package:network_call/services/network/network_interface.dart';
 
 import 'token_interceptor_dio.dart';
 

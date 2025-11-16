@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:network_call/core/network/network_config.dart';
+import 'package:network_call/core/network/network_interface.dart';
 import 'package:network_call/model/error_response.dart';
 import 'package:network_call/model/network_response.dart';
 import 'package:network_call/model/token_manager.dart';
-import 'package:network_call/services/network/network_config.dart';
-import 'package:network_call/services/network/network_interface.dart';
 
 class HttpNetworkCaller implements NetworkInterface {
   final Duration _timeout = NetworkConfig.timeout;
