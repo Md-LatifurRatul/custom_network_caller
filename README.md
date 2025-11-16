@@ -7,7 +7,6 @@ This package provides **two fully independent network callers**:
 - **`HttpNetworkCaller`** – lightweight, built on `http`
 - **`DioNetworkCaller`** – powerful, with interceptors & retries
 
-> You decide which one to use — **no factory, no enums.**
 
 ---
 
