@@ -1,57 +1,84 @@
 import 'package:dio/dio.dart';
-import 'package:network_call/services/network/network_config.dart';
-import 'package:network_call/model/token_manager.dart';
 
+import '../../model/token_manager.dart';
+import 'network_config.dart';
+
+/// Interceptor for Dio: handles refresh & retry on 401.
+/// We do not auto-attach token here — callers add `Authorization` via NetworkConfig.getHeaders(withToken:true).
 class TokenInterceptorDio extends Interceptor {
   final Dio dio;
   TokenInterceptorDio(this.dio);
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
-    final token = await TokenManager.getAccessToken();
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
-    }
-    super.onRequest(options, handler);
-  }
-
-  @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
+    final resp = err.response;
+    if (resp?.statusCode == 401) {
+      // Attempt refresh
       final refreshToken = await TokenManager.getRefreshToken();
+      if (refreshToken == null || refreshToken.isEmpty) {
+        await NetworkConfig.clearTokensAndLogout();
+        return handler.next(err);
+      }
 
-      if (refreshToken != null && refreshToken.isNotEmpty) {
-        try {
-          final response = await dio.post(
-            '${NetworkConfig.baseUrl}/auth/refresh',
-            data: {'refresh_token': refreshToken},
-          );
+      try {
+        // Call refresh endpoint directly ignoring interceptors
+        final refreshResp = await dio.post(
+          '${NetworkConfig.baseUrl}${NetworkConfig.refreshEndpoint}',
+          data: {'refresh_token': refreshToken},
+          options: Options(headers: NetworkConfig.defaultHeaders),
+        );
 
-          final newAccessToken = response.data['access_token'];
-          final newRefreshToken = response.data['refresh_token'];
+        if (refreshResp.statusCode != null &&
+            refreshResp.statusCode! >= 200 &&
+            refreshResp.statusCode! < 300) {
+          final newAccess = refreshResp.data['access_token'] as String?;
+          final newRefresh = refreshResp.data['refresh_token'] as String?;
+          if (newAccess != null) {
+            await TokenManager.saveTokens(
+              accessToken: newAccess,
+              refreshToken: newRefresh,
+            );
 
-          await TokenManager.saveTokens(
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken,
-          );
+            // Retry original request with new token
+            final opts = err.requestOptions;
+            // Update authorization header
+            opts.headers['Authorization'] = 'Bearer $newAccess';
 
-          final retryRequest = err.requestOptions;
-          retryRequest.headers['Authorization'] = 'Bearer $newAccessToken';
-          final retryResponse = await dio.fetch(retryRequest);
+            // Create a new request with the same options and fetch
+            final clone = Options(
+              method: opts.method,
+              headers: opts.headers,
+              responseType: opts.responseType,
+              contentType: opts.contentType,
+              followRedirects: opts.followRedirects,
+              validateStatus: opts.validateStatus,
+              receiveDataWhenStatusError: opts.receiveDataWhenStatusError,
+              extra: opts.extra,
+            );
 
-          return handler.resolve(retryResponse);
-        } catch (_) {
-          await TokenManager.clearTokens();
-          // TODO: trigger app logout if refresh fails
+            final retryResponse = await dio.request<dynamic>(
+              opts.path,
+              data: opts.data,
+              queryParameters: opts.queryParameters,
+              options: clone,
+              cancelToken: opts.cancelToken,
+              onReceiveProgress: opts.onReceiveProgress,
+              onSendProgress: opts.onSendProgress,
+            );
+
+            return handler.resolve(retryResponse);
+          }
         }
-      } else {
-        await TokenManager.clearTokens();
+
+        // if refresh failed:
+        await NetworkConfig.clearTokensAndLogout();
+        return handler.next(err);
+      } catch (e) {
+        await NetworkConfig.clearTokensAndLogout();
+        return handler.next(err);
       }
     }
 
-    super.onError(err, handler);
+    return handler.next(err);
   }
 }
