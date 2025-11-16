@@ -1,5 +1,4 @@
-```markdown
-# 📡 Flutter Network Caller (HTTP + Dio)
+## 📡 Flutter Network Caller (HTTP + Dio)
 
 A clean, extensible, production-ready networking layer for Flutter projects.  
 This package provides **two fully independent network callers**:
