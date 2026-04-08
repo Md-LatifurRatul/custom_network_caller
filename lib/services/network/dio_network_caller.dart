@@ -172,11 +172,20 @@ class DioNetworkCaller implements NetworkInterface {
   NetworkResponse<T> _handleError<T>(DioException e) {
     final resp = e.response;
     if (e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.receiveTimeout) {
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.sendTimeout) {
       return NetworkResponse(
         isSuccess: false,
         message: 'Request timeout',
         error: ErrorResponse(message: 'Request timeout'),
+      );
+    }
+
+    if (e.type == DioExceptionType.connectionError) {
+      return NetworkResponse(
+        isSuccess: false,
+        message: 'No internet connection',
+        error: ErrorResponse(message: 'No internet connection'),
       );
     }
 

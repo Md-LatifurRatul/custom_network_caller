@@ -26,6 +26,9 @@ class TokenManager {
   static Future<String?> getRefreshToken() async =>
       await _storage.read(key: _refreshTokenKey);
 
-  /// Clear all tokens
-  static Future<void> clearTokens() async => await _storage.deleteAll();
+  /// Clear only token keys (preserves other secure storage entries)
+  static Future<void> clearTokens() async {
+    await _storage.delete(key: _accessTokenKey);
+    await _storage.delete(key: _refreshTokenKey);
+  }
 }

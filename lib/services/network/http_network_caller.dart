@@ -103,7 +103,11 @@ class HttpNetworkCaller implements NetworkInterface {
         ...?headers,
       };
 
-      final uri = Uri.parse(url);
+      // Prepend baseUrl if the url is relative (doesn't start with http)
+      final fullUrl = url.startsWith('http')
+          ? url
+          : '${NetworkConfig.baseUrl}$url';
+      final uri = Uri.parse(fullUrl);
       http.Response response;
       switch (method) {
         case 'GET':
@@ -162,6 +166,15 @@ class HttpNetworkCaller implements NetworkInterface {
           );
         } else {
           await NetworkConfig.clearTokensAndLogout();
+          return NetworkResponse(
+            isSuccess: false,
+            statusCode: 401,
+            message: 'Session expired. Please login again.',
+            error: ErrorResponse(
+              statusCode: 401,
+              message: 'Session expired. Please login again.',
+            ),
+          );
         }
       }
 
