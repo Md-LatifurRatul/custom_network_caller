@@ -6,8 +6,8 @@ typedef LogoutCallback = void Function();
 
 class NetworkConfig {
   // change when building for different environments
-  static const String devBaseUrl = 'https://dev.api.example.com';
-  static const String prodBaseUrl = 'https://api.example.com';
+  static const String devBaseUrl = 'https://jsonplaceholder.typicode.com';
+  static const String prodBaseUrl = 'https://jsonplaceholder.typicode.com';
 
   // choose environment
   static bool isProduction = false;
