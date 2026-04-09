@@ -55,7 +55,7 @@ class ErrorTestsTab extends StatelessWidget {
             isError: true,
             onExecute: () => caller.getRequest<Post>(
               url: ApiUrl.posts,
-              parser: (_) => throw FormatException('Intentional parse error'),
+              parser: (_) => throw const FormatException('Intentional parse error'),
             ),
           ),
           OperationCard(
