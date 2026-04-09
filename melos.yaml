@@ -1,0 +1,31 @@
+name: network_caller
+
+packages:
+  - packages/*
+
+scripts:
+  analyze:
+    exec: dart analyze --fatal-infos
+    description: Run analyzer in all packages
+
+  test:
+    exec: dart test
+    description: Run tests in all packages
+    packageFilters:
+      dirExists: test
+
+  format:
+    exec: dart format --set-exit-if-changed .
+    description: Check formatting in all packages
+
+  publish:dry:
+    exec: dart pub publish --dry-run
+    description: Dry-run publish for all public packages
+    packageFilters:
+      noPrivate: true
+
+  publish:
+    exec: dart pub publish --force
+    description: Publish all public packages to pub.dev
+    packageFilters:
+      noPrivate: true

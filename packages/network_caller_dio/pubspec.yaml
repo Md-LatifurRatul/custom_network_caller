@@ -1,0 +1,30 @@
+name: network_caller_dio
+description: Dio implementation of network_caller using package:dio. Handles tokens, retry, interceptors, logging, cancellation — zero boilerplate.
+version: 1.0.0
+homepage: https://github.com/Md-LatifurRatul/custom_network_caller
+repository: https://github.com/Md-LatifurRatul/custom_network_caller/tree/main/packages/network_caller_dio
+topics:
+  - networking
+  - dio
+  - api
+  - rest
+  - http-client
+
+resolution: workspace
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  network_caller_core:
+    path: ../network_caller_core
+  dio: ^5.9.0
+  flutter_secure_storage: ^9.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^5.1.0
