@@ -26,11 +26,7 @@ abstract class NetworkLogger {
   });
 
   /// Called when a request fails (network error, timeout, etc.).
-  void logError(
-    String url, {
-    dynamic error,
-    int? statusCode,
-  });
+  void logError(String url, {dynamic error, int? statusCode});
 }
 
 /// Default logger that prints to the Dart developer console.
@@ -61,8 +57,7 @@ class ConsoleNetworkLogger extends NetworkLogger {
     Map<String, String>? headers,
     dynamic body,
   }) {
-    final buffer = StringBuffer()
-      ..writeln('→ ${method.value} $url');
+    final buffer = StringBuffer()..writeln('→ ${method.value} $url');
 
     if (logHeaders && headers != null && headers.isNotEmpty) {
       buffer.writeln('  Headers: $headers');
@@ -82,13 +77,13 @@ class ConsoleNetworkLogger extends NetworkLogger {
     Duration? elapsed,
   }) {
     final elapsedStr = elapsed != null ? ' (${elapsed.inMilliseconds}ms)' : '';
-    final buffer = StringBuffer()
-      ..writeln('← $statusCode $url$elapsedStr');
+    final buffer = StringBuffer()..writeln('← $statusCode $url$elapsedStr');
 
     if (logBody && body != null) {
       final bodyStr = body.toString();
-      final truncated =
-          bodyStr.length > 500 ? '${bodyStr.substring(0, 500)}...' : bodyStr;
+      final truncated = bodyStr.length > 500
+          ? '${bodyStr.substring(0, 500)}...'
+          : bodyStr;
       buffer.writeln('  Body: $truncated');
     }
 
@@ -96,16 +91,8 @@ class ConsoleNetworkLogger extends NetworkLogger {
   }
 
   @override
-  void logError(
-    String url, {
-    dynamic error,
-    int? statusCode,
-  }) {
+  void logError(String url, {dynamic error, int? statusCode}) {
     final statusStr = statusCode != null ? '[$statusCode] ' : '';
-    dev.log(
-      '✗ $statusStr$url — $error',
-      name: 'NetworkCaller',
-      level: 1000,
-    );
+    dev.log('✗ $statusStr$url — $error', name: 'NetworkCaller', level: 1000);
   }
 }

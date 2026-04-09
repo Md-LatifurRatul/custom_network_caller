@@ -1,0 +1,14 @@
+name: network_caller_dio_example
+description: Example app for network_caller_dio
+publish_to: none
+
+resolution: workspace
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  network_caller_dio:
+    path: ../

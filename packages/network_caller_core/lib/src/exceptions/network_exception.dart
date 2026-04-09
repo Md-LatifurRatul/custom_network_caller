@@ -21,7 +21,8 @@ class NetworkException implements Exception {
   });
 
   @override
-  String toString() => '$runtimeType(statusCode: $statusCode, message: $message)';
+  String toString() =>
+      '$runtimeType(statusCode: $statusCode, message: $message)';
 }
 
 /// Request timed out (connect, send, or receive).
@@ -111,9 +112,5 @@ class RequestCancelledException extends NetworkException {
 
 /// SSL/TLS certificate validation failed (bad certificate, expired, etc.).
 class SslException extends NetworkException {
-  const SslException(
-    super.message, {
-    super.originalError,
-    super.stackTrace,
-  });
+  const SslException(super.message, {super.originalError, super.stackTrace});
 }

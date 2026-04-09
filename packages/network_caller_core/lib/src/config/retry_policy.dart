@@ -49,20 +49,20 @@ class RetryPolicy {
 
   /// No retries — default behavior.
   const RetryPolicy.none()
-      : maxRetries = 0,
-        initialDelay = Duration.zero,
-        backoffMultiplier = 1.0,
-        maxDelay = Duration.zero,
-        retryWhen = null;
+    : maxRetries = 0,
+      initialDelay = Duration.zero,
+      backoffMultiplier = 1.0,
+      maxDelay = Duration.zero,
+      retryWhen = null;
 
   /// Standard preset: retry up to 3 times on server errors (5xx) and 429,
   /// starting at 500ms with 2x exponential backoff, capped at 10s.
   const RetryPolicy.standard()
-      : maxRetries = 3,
-        initialDelay = const Duration(milliseconds: 500),
-        backoffMultiplier = 2.0,
-        maxDelay = const Duration(seconds: 10),
-        retryWhen = null;
+    : maxRetries = 3,
+      initialDelay = const Duration(milliseconds: 500),
+      backoffMultiplier = 2.0,
+      maxDelay = const Duration(seconds: 10),
+      retryWhen = null;
 
   /// Computes the delay for a given [attempt] (0-indexed).
   ///

@@ -40,10 +40,10 @@ class HttpNetworkCaller implements NetworkInterface {
     required NetworkConfig config,
     required TokenStorage tokenStorage,
     http.Client? client,
-  })  : _config = config,
-        _tokenManager = TokenManager(tokenStorage),
-        _parser = ResponseParser(config),
-        _client = client ?? http.Client();
+  }) : _config = config,
+       _tokenManager = TokenManager(tokenStorage),
+       _parser = ResponseParser(config),
+       _client = client ?? http.Client();
 
   @override
   NetworkConfig get config => _config;
@@ -65,18 +65,17 @@ class HttpNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.get,
-        url: url,
-        queryParameters: queryParameters,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.get,
+    url: url,
+    queryParameters: queryParameters,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> post<T>({
@@ -88,18 +87,17 @@ class HttpNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.post,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.post,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> put<T>({
@@ -111,18 +109,17 @@ class HttpNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.put,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.put,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> patch<T>({
@@ -134,18 +131,17 @@ class HttpNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.patch,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.patch,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> delete<T>({
@@ -157,18 +153,17 @@ class HttpNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.delete,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.delete,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> upload<T>({
@@ -206,11 +201,13 @@ class HttpNetworkCaller implements NetworkInterface {
 
       // Add files
       for (final file in files) {
-        request.files.add(http.MultipartFile.fromBytes(
-          file.field,
-          file.bytes,
-          filename: file.filename,
-        ));
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            file.field,
+            file.bytes,
+            filename: file.filename,
+          ),
+        );
       }
 
       _config.logger?.logRequest(
@@ -221,8 +218,8 @@ class HttpNetworkCaller implements NetworkInterface {
       );
 
       final streamedResponse = await request.send().timeout(
-            _config.effectiveSendTimeout,
-          );
+        _config.effectiveSendTimeout,
+      );
 
       // Track progress if callback provided
       final totalBytes = streamedResponse.contentLength ?? 0;
@@ -256,24 +253,33 @@ class HttpNetworkCaller implements NetworkInterface {
       );
     } on SocketException catch (e) {
       return NetworkResponse.failure(
-        exception: NoConnectionException('No internet connection',
-            originalError: e),
+        exception: NoConnectionException(
+          'No internet connection',
+          originalError: e,
+        ),
       );
     } on TimeoutException catch (e) {
       return NetworkResponse.failure(
-        exception: NetworkTimeoutException('Upload timed out',
-            originalError: e),
+        exception: NetworkTimeoutException(
+          'Upload timed out',
+          originalError: e,
+        ),
       );
     } catch (e, st) {
       if (cancelToken?.isCancelled == true) {
         return NetworkResponse.failure(
-          exception: RequestCancelledException('Upload cancelled',
-              originalError: e),
+          exception: RequestCancelledException(
+            'Upload cancelled',
+            originalError: e,
+          ),
         );
       }
       return NetworkResponse.failure(
-        exception: NetworkException(e.toString(),
-            originalError: e, stackTrace: st),
+        exception: NetworkException(
+          e.toString(),
+          originalError: e,
+          stackTrace: st,
+        ),
       );
     }
   }
@@ -320,11 +326,11 @@ class HttpNetworkCaller implements NetworkInterface {
         authStrategy: _config.authStrategy,
         withToken: withToken,
       );
-      final allQueryParams = {
-        ...?queryParameters,
-        ...authQueryParams,
-      };
-      final uri = _buildUrl(url, allQueryParams.isEmpty ? null : allQueryParams);
+      final allQueryParams = {...?queryParameters, ...authQueryParams};
+      final uri = _buildUrl(
+        url,
+        allQueryParams.isEmpty ? null : allQueryParams,
+      );
 
       // Run middleware onRequest hooks
       final middlewareCtx = MiddlewareRequestContext(
@@ -349,8 +355,9 @@ class HttpNetworkCaller implements NetworkInterface {
       final encodedBody = _encodeBody(middlewareCtx.body, mergedHeaders);
 
       // Select client (cancel token has its own client)
-      final activeClient =
-          (cancelToken is HttpCancelToken) ? cancelToken.client : _client;
+      final activeClient = (cancelToken is HttpCancelToken)
+          ? cancelToken.client
+          : _client;
 
       // Execute request
       final effectiveTimeout = timeout ?? _config.connectTimeout;
@@ -405,7 +412,8 @@ class HttpNetworkCaller implements NetworkInterface {
             message: 'Session expired. Please login again.',
             responseHeaders: responseHeaders,
             exception: const UnauthorizedException(
-                'Session expired. Please login again.'),
+              'Session expired. Please login again.',
+            ),
             error: const ErrorResponse(
               statusCode: 401,
               message: 'Session expired. Please login again.',
@@ -417,11 +425,11 @@ class HttpNetworkCaller implements NetworkInterface {
       // --- Retry Policy (5xx, 429, custom) ---
       if (_config.retryPolicy.shouldRetry(response.statusCode, retryAttempt)) {
         // Respect Retry-After header for 429
-        Duration delay =
-            _config.retryPolicy.delayForAttempt(retryAttempt);
+        Duration delay = _config.retryPolicy.delayForAttempt(retryAttempt);
         if (response.statusCode == 429) {
-          final retryAfter =
-              RetryPolicy.parseRetryAfter(responseHeaders['retry-after']);
+          final retryAfter = RetryPolicy.parseRetryAfter(
+            responseHeaders['retry-after'],
+          );
           if (retryAfter != null) delay = retryAfter;
         }
 
@@ -455,28 +463,33 @@ class HttpNetworkCaller implements NetworkInterface {
       _logError(url, e);
       _runMiddlewareOnError(e);
       return NetworkResponse.failure(
-        exception: NoConnectionException('No internet connection',
-            originalError: e),
+        exception: NoConnectionException(
+          'No internet connection',
+          originalError: e,
+        ),
       );
     } on TimeoutException catch (e) {
       _logError(url, e);
       _runMiddlewareOnError(e);
       return NetworkResponse.failure(
-        exception: NetworkTimeoutException('Request timed out',
-            originalError: e),
+        exception: NetworkTimeoutException(
+          'Request timed out',
+          originalError: e,
+        ),
       );
     } on http.ClientException catch (e) {
       _logError(url, e);
       _runMiddlewareOnError(e);
       if (cancelToken?.isCancelled == true) {
         return NetworkResponse.failure(
-          exception: RequestCancelledException('Request cancelled',
-              originalError: e),
+          exception: RequestCancelledException(
+            'Request cancelled',
+            originalError: e,
+          ),
         );
       }
       return NetworkResponse.failure(
-        exception:
-            NetworkException(e.message, originalError: e),
+        exception: NetworkException(e.message, originalError: e),
       );
     } on HandshakeException catch (e) {
       _logError(url, e);
@@ -494,8 +507,11 @@ class HttpNetworkCaller implements NetworkInterface {
       _logError(url, e);
       _runMiddlewareOnError(e);
       return NetworkResponse.failure(
-        exception:
-            NetworkException(e.toString(), originalError: e, stackTrace: st),
+        exception: NetworkException(
+          e.toString(),
+          originalError: e,
+          stackTrace: st,
+        ),
       );
     }
   }
@@ -513,14 +529,10 @@ class HttpNetworkCaller implements NetworkInterface {
   }) {
     return switch (method) {
       RequestMethod.get => client.get(uri, headers: headers),
-      RequestMethod.post =>
-        client.post(uri, headers: headers, body: body),
-      RequestMethod.put =>
-        client.put(uri, headers: headers, body: body),
-      RequestMethod.patch =>
-        client.patch(uri, headers: headers, body: body),
-      RequestMethod.delete =>
-        client.delete(uri, headers: headers, body: body),
+      RequestMethod.post => client.post(uri, headers: headers, body: body),
+      RequestMethod.put => client.put(uri, headers: headers, body: body),
+      RequestMethod.patch => client.patch(uri, headers: headers, body: body),
+      RequestMethod.delete => client.delete(uri, headers: headers, body: body),
     };
   }
 
@@ -529,12 +541,12 @@ class HttpNetworkCaller implements NetworkInterface {
   // ---------------------------------------------------------------------------
 
   Uri _buildUrl(String url, Map<String, String>? queryParameters) {
-    final fullUrl =
-        url.startsWith('http') ? url : '${_config.baseUrl}$url';
+    final fullUrl = url.startsWith('http') ? url : '${_config.baseUrl}$url';
     final uri = Uri.parse(fullUrl);
     if (queryParameters != null && queryParameters.isNotEmpty) {
       return uri.replace(
-          queryParameters: {...uri.queryParameters, ...queryParameters});
+        queryParameters: {...uri.queryParameters, ...queryParameters},
+      );
     }
     return uri;
   }
@@ -548,11 +560,15 @@ class HttpNetworkCaller implements NetworkInterface {
     if (body is String) return body;
 
     // Form URL-encoded if Content-Type says so
-    final contentType = headers['Content-Type'] ?? headers['content-type'] ?? '';
+    final contentType =
+        headers['Content-Type'] ?? headers['content-type'] ?? '';
     if (contentType.contains('x-www-form-urlencoded') && body is Map) {
-      return body.entries.map((e) =>
-        '${Uri.encodeComponent(e.key.toString())}=${Uri.encodeComponent(e.value.toString())}')
-        .join('&');
+      return body.entries
+          .map(
+            (e) =>
+                '${Uri.encodeComponent(e.key.toString())}=${Uri.encodeComponent(e.value.toString())}',
+          )
+          .join('&');
     }
 
     // Default: JSON encode
@@ -593,8 +609,7 @@ class HttpNetworkCaller implements NetworkInterface {
         return null;
       }
 
-      final refreshUrl =
-          '${_config.baseUrl}${_config.refreshEndpoint}';
+      final refreshUrl = '${_config.baseUrl}${_config.refreshEndpoint}';
       final headers = {..._config.defaultHeaders};
       final resp = await _client
           .post(
@@ -655,7 +670,8 @@ class HttpNetworkCaller implements NetworkInterface {
   void _throwIfDisposed() {
     if (_disposed) {
       throw StateError(
-          'HttpNetworkCaller has been disposed and cannot be used.');
+        'HttpNetworkCaller has been disposed and cannot be used.',
+      );
     }
   }
 

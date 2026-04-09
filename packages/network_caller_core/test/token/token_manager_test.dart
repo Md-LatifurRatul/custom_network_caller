@@ -17,25 +17,20 @@ void main() {
     });
 
     test('saves and retrieves refresh token', () async {
-      await manager.saveTokens(
-        accessToken: 'access',
-        refreshToken: 'refresh',
-      );
+      await manager.saveTokens(accessToken: 'access', refreshToken: 'refresh');
       expect(await manager.getAccessToken(), 'access');
       expect(await manager.getRefreshToken(), 'refresh');
     });
 
     test('does not overwrite refresh token when not provided', () async {
-      await manager.saveTokens(
-          accessToken: 'a1', refreshToken: 'r1');
+      await manager.saveTokens(accessToken: 'a1', refreshToken: 'r1');
       await manager.saveTokens(accessToken: 'a2');
       expect(await manager.getAccessToken(), 'a2');
       expect(await manager.getRefreshToken(), 'r1');
     });
 
     test('clearTokens removes both tokens', () async {
-      await manager.saveTokens(
-          accessToken: 'a', refreshToken: 'r');
+      await manager.saveTokens(accessToken: 'a', refreshToken: 'r');
       await manager.clearTokens();
       expect(await manager.getAccessToken(), isNull);
       expect(await manager.getRefreshToken(), isNull);

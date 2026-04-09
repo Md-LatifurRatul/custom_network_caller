@@ -17,12 +17,14 @@ class TokenInterceptor extends Interceptor {
 
   /// Separate Dio instance without interceptors — refresh calls go through
   /// this to prevent infinite 401 loops.
-  late final Dio _refreshDio = Dio(BaseOptions(
-    baseUrl: _config.baseUrl,
-    connectTimeout: _config.connectTimeout,
-    receiveTimeout: _config.receiveTimeout,
-    headers: _config.defaultHeaders,
-  ));
+  late final Dio _refreshDio = Dio(
+    BaseOptions(
+      baseUrl: _config.baseUrl,
+      connectTimeout: _config.connectTimeout,
+      receiveTimeout: _config.receiveTimeout,
+      headers: _config.defaultHeaders,
+    ),
+  );
 
   /// Completer acts as a lock: when a refresh is in-flight, subsequent
   /// 401 handlers await this instead of starting another refresh.
@@ -32,8 +34,8 @@ class TokenInterceptor extends Interceptor {
     required this.dio,
     required TokenManager tokenManager,
     required NetworkConfig config,
-  })  : _tokenManager = tokenManager,
-        _config = config;
+  }) : _tokenManager = tokenManager,
+       _config = config;
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {

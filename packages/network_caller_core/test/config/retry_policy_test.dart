@@ -67,10 +67,7 @@ void main() {
     });
 
     test('parseRetryAfter parses seconds', () {
-      expect(
-        RetryPolicy.parseRetryAfter('120'),
-        const Duration(seconds: 120),
-      );
+      expect(RetryPolicy.parseRetryAfter('120'), const Duration(seconds: 120));
     });
 
     test('parseRetryAfter returns null for garbage', () {
