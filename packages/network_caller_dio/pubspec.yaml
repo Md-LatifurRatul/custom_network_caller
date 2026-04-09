@@ -1,7 +1,5 @@
 name: network_caller_dio
-description: >-
-  Production-ready HTTP networking for Flutter using package:dio.
-  Auto-handles tokens, refresh, interceptors, retry, and typed errors.
+description: "Production-ready Dio networking for Flutter. Auto-handles tokens, refresh, interceptors, retry, and typed errors."
 version: 1.0.0
 homepage: https://github.com/Md-LatifurRatul/custom_network_caller
 repository: https://github.com/Md-LatifurRatul/custom_network_caller/tree/main/packages/network_caller_dio
