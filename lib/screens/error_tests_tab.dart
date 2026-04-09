@@ -1,9 +1,9 @@
 import 'package:adapti_flow/adapti_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:network_call/model/post.dart';
-import 'package:network_call/services/network/network_interface.dart';
 import 'package:network_call/utils.dart/api_url.dart';
 import 'package:network_call/widgets/operation_card.dart';
+import 'package:network_caller_http/network_caller_http.dart';
 
 class ErrorTestsTab extends StatelessWidget {
   final NetworkInterface caller;
@@ -35,7 +35,7 @@ class ErrorTestsTab extends StatelessWidget {
             method: 'GET',
             callerLabel: callerLabel,
             isError: true,
-            onExecute: () => caller.getRequest(url: ApiUrl.invalid),
+            onExecute: () => caller.get(url: ApiUrl.invalid),
           ),
           OperationCard(
             title: 'Network Error',
@@ -43,7 +43,7 @@ class ErrorTestsTab extends StatelessWidget {
             method: 'GET',
             callerLabel: callerLabel,
             isError: true,
-            onExecute: () => caller.getRequest(
+            onExecute: () => caller.get(
               url: 'https://invalid-host-that-does-not-exist.xyz/api',
             ),
           ),
@@ -53,9 +53,10 @@ class ErrorTestsTab extends StatelessWidget {
             method: 'GET',
             callerLabel: callerLabel,
             isError: true,
-            onExecute: () => caller.getRequest<Post>(
+            onExecute: () => caller.get<Post>(
               url: ApiUrl.posts,
-              parser: (_) => throw const FormatException('Intentional parse error'),
+              parser: (_) =>
+                  throw const FormatException('Intentional parse error'),
             ),
           ),
           OperationCard(
@@ -65,7 +66,7 @@ class ErrorTestsTab extends StatelessWidget {
             callerLabel: callerLabel,
             isError: true,
             onExecute: () =>
-                caller.getRequest(url: ApiUrl.posts, withToken: true),
+                caller.get(url: ApiUrl.posts, withToken: true),
           ),
         ],
       ),

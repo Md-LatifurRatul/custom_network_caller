@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:network_call/model/network_response.dart';
+import 'package:network_caller_http/network_caller_http.dart';
 
 class OperationCard extends StatefulWidget {
   final String title;

@@ -19,8 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  network_caller_core:
-    path: ../network_caller_core
+  network_caller_core: ^1.0.0
   dio: ^5.9.0
   flutter_secure_storage: ^9.2.4
 
