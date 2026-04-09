@@ -9,6 +9,7 @@ environment:
 # Dart workspace — resolves dependencies across all packages
 workspace:
   - packages/network_caller_core
+  - packages/network_caller_http
 
 dependencies:
   flutter:
