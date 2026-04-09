@@ -1,0 +1,14 @@
+name: network_caller_http_example
+description: Example app for network_caller_http
+publish_to: none
+
+resolution: workspace
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  network_caller_http:
+    path: ../

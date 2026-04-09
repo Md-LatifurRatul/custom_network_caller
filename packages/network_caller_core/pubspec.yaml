@@ -1,8 +1,11 @@
 name: network_caller_core
-description: Core interfaces, models, and configuration for the network_caller package federation. Pure Dart — no Flutter dependency.
+description: >-
+  Core interfaces, models, configuration, and typed exceptions for the
+  network_caller package federation. Pure Dart with zero dependencies.
 version: 1.0.0
 homepage: https://github.com/Md-LatifurRatul/custom_network_caller
 repository: https://github.com/Md-LatifurRatul/custom_network_caller/tree/main/packages/network_caller_core
+issue_tracker: https://github.com/Md-LatifurRatul/custom_network_caller/issues
 topics:
   - networking
   - http

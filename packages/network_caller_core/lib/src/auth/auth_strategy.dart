@@ -34,7 +34,8 @@ class BearerAuthStrategy extends AuthStrategy {
 
   @override
   Future<Map<String, String>> buildAuthHeaders(
-      TokenManager tokenManager) async {
+    TokenManager tokenManager,
+  ) async {
     final token = await tokenManager.getAccessToken();
     if (token != null && token.isNotEmpty) {
       return {'Authorization': 'Bearer $token'};
@@ -68,7 +69,8 @@ class ApiKeyAuthStrategy extends AuthStrategy {
 
   @override
   Future<Map<String, String>> buildAuthHeaders(
-      TokenManager tokenManager) async {
+    TokenManager tokenManager,
+  ) async {
     if (location == ApiKeyLocation.header) {
       return {paramName: key};
     }
@@ -77,7 +79,8 @@ class ApiKeyAuthStrategy extends AuthStrategy {
 
   @override
   Future<Map<String, String>> buildAuthQueryParams(
-      TokenManager tokenManager) async {
+    TokenManager tokenManager,
+  ) async {
     if (location == ApiKeyLocation.queryParam) {
       return {paramName: key};
     }
@@ -94,14 +97,12 @@ class BasicAuthStrategy extends AuthStrategy {
   final String username;
   final String password;
 
-  const BasicAuthStrategy({
-    required this.username,
-    required this.password,
-  });
+  const BasicAuthStrategy({required this.username, required this.password});
 
   @override
   Future<Map<String, String>> buildAuthHeaders(
-      TokenManager tokenManager) async {
+    TokenManager tokenManager,
+  ) async {
     final credentials = base64Encode(utf8.encode('$username:$password'));
     return {'Authorization': 'Basic $credentials'};
   }
@@ -121,13 +122,14 @@ class BasicAuthStrategy extends AuthStrategy {
 /// ```
 class CustomAuthStrategy extends AuthStrategy {
   final Future<Map<String, String>> Function(TokenManager tokenManager)
-      headerBuilder;
+  headerBuilder;
 
   const CustomAuthStrategy({required this.headerBuilder});
 
   @override
   Future<Map<String, String>> buildAuthHeaders(
-      TokenManager tokenManager) async {
+    TokenManager tokenManager,
+  ) async {
     return headerBuilder(tokenManager);
   }
 }

@@ -38,24 +38,25 @@ class DioNetworkCaller implements NetworkInterface {
     required TokenStorage tokenStorage,
     dio.Dio? dioInstance,
     List<dio.Interceptor>? extraInterceptors,
-  })  : _config = config,
-        _tokenManager = TokenManager(tokenStorage),
-        _parser = ResponseParser(config),
-        _dio = dioInstance ??
-            dio.Dio(dio.BaseOptions(
-              baseUrl: config.baseUrl,
-              connectTimeout: config.connectTimeout,
-              receiveTimeout: config.receiveTimeout,
-              sendTimeout: config.effectiveSendTimeout,
-              headers: config.defaultHeaders,
-              followRedirects: config.followRedirects,
-            )) {
+  }) : _config = config,
+       _tokenManager = TokenManager(tokenStorage),
+       _parser = ResponseParser(config),
+       _dio =
+           dioInstance ??
+           dio.Dio(
+             dio.BaseOptions(
+               baseUrl: config.baseUrl,
+               connectTimeout: config.connectTimeout,
+               receiveTimeout: config.receiveTimeout,
+               sendTimeout: config.effectiveSendTimeout,
+               headers: config.defaultHeaders,
+               followRedirects: config.followRedirects,
+             ),
+           ) {
     // Add token interceptor (handles 401 refresh + retry)
-    _dio.interceptors.add(TokenInterceptor(
-      dio: _dio,
-      tokenManager: _tokenManager,
-      config: config,
-    ));
+    _dio.interceptors.add(
+      TokenInterceptor(dio: _dio, tokenManager: _tokenManager, config: config),
+    );
 
     // Add logging interceptor if configured
     if (config.logger != null) {
@@ -92,18 +93,17 @@ class DioNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.get,
-        url: url,
-        queryParameters: queryParameters,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.get,
+    url: url,
+    queryParameters: queryParameters,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> post<T>({
@@ -115,18 +115,17 @@ class DioNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.post,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.post,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> put<T>({
@@ -138,18 +137,17 @@ class DioNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.put,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.put,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> patch<T>({
@@ -161,18 +159,17 @@ class DioNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.patch,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.patch,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> delete<T>({
@@ -184,18 +181,17 @@ class DioNetworkCaller implements NetworkInterface {
     Duration? timeout,
     ResponseType responseType = ResponseType.json,
     CancelToken? cancelToken,
-  }) =>
-      _request<T>(
-        method: RequestMethod.delete,
-        url: url,
-        body: body,
-        headers: headers,
-        withToken: withToken,
-        parser: parser,
-        timeout: timeout,
-        responseType: responseType,
-        cancelToken: cancelToken,
-      );
+  }) => _request<T>(
+    method: RequestMethod.delete,
+    url: url,
+    body: body,
+    headers: headers,
+    withToken: withToken,
+    parser: parser,
+    timeout: timeout,
+    responseType: responseType,
+    cancelToken: cancelToken,
+  );
 
   @override
   Future<NetworkResponse<T>> upload<T>({
@@ -233,17 +229,17 @@ class DioNetworkCaller implements NetworkInterface {
 
       // Add files
       for (final file in files) {
-        formData.files.add(MapEntry(
-          file.field,
-          dio.MultipartFile.fromBytes(
-            file.bytes,
-            filename: file.filename,
+        formData.files.add(
+          MapEntry(
+            file.field,
+            dio.MultipartFile.fromBytes(file.bytes, filename: file.filename),
           ),
-        ));
+        );
       }
 
-      final dioCancelToken =
-          (cancelToken is DioCancelToken) ? cancelToken.dioToken : null;
+      final dioCancelToken = (cancelToken is DioCancelToken)
+          ? cancelToken.dioToken
+          : null;
 
       final response = await _dio.post(
         url,
@@ -265,8 +261,11 @@ class DioNetworkCaller implements NetworkInterface {
       return _mapDioException<T>(e);
     } catch (e, st) {
       return NetworkResponse.failure(
-        exception:
-            NetworkException(e.toString(), originalError: e, stackTrace: st),
+        exception: NetworkException(
+          e.toString(),
+          originalError: e,
+          stackTrace: st,
+        ),
       );
     }
   }
@@ -320,8 +319,9 @@ class DioNetworkCaller implements NetworkInterface {
       final dioResponseType = _mapResponseType(responseType);
 
       // Cancel token
-      final dioCancelToken =
-          (cancelToken is DioCancelToken) ? cancelToken.dioToken : null;
+      final dioCancelToken = (cancelToken is DioCancelToken)
+          ? cancelToken.dioToken
+          : null;
 
       // Execute request
       final response = await _dio.request<dynamic>(
@@ -347,8 +347,9 @@ class DioNetworkCaller implements NetworkInterface {
       if (_config.retryPolicy.shouldRetry(statusCode, retryAttempt)) {
         Duration delay = _config.retryPolicy.delayForAttempt(retryAttempt);
         if (statusCode == 429) {
-          final retryAfter =
-              RetryPolicy.parseRetryAfter(responseHeaders['retry-after']);
+          final retryAfter = RetryPolicy.parseRetryAfter(
+            responseHeaders['retry-after'],
+          );
           if (retryAfter != null) delay = retryAfter;
         }
 
@@ -381,13 +382,14 @@ class DioNetworkCaller implements NetworkInterface {
       final statusCode = e.response?.statusCode;
       if (statusCode != null &&
           _config.retryPolicy.shouldRetry(statusCode, retryAttempt)) {
-        final responseHeaders = e.response?.headers.map.map(
-                (k, v) => MapEntry(k, v.join(', '))) ??
+        final responseHeaders =
+            e.response?.headers.map.map((k, v) => MapEntry(k, v.join(', '))) ??
             {};
         Duration delay = _config.retryPolicy.delayForAttempt(retryAttempt);
         if (statusCode == 429) {
-          final retryAfter =
-              RetryPolicy.parseRetryAfter(responseHeaders['retry-after']);
+          final retryAfter = RetryPolicy.parseRetryAfter(
+            responseHeaders['retry-after'],
+          );
           if (retryAfter != null) delay = retryAfter;
         }
 
@@ -410,8 +412,11 @@ class DioNetworkCaller implements NetworkInterface {
       return _mapDioException<T>(e);
     } catch (e, st) {
       return NetworkResponse.failure(
-        exception:
-            NetworkException(e.toString(), originalError: e, stackTrace: st),
+        exception: NetworkException(
+          e.toString(),
+          originalError: e,
+          stackTrace: st,
+        ),
       );
     }
   }
@@ -422,35 +427,41 @@ class DioNetworkCaller implements NetworkInterface {
 
   NetworkResponse<T> _mapDioException<T>(dio.DioException e) {
     final resp = e.response;
-    final responseHeaders =
-        resp?.headers.map.map((k, v) => MapEntry(k, v.join(', ')));
+    final responseHeaders = resp?.headers.map.map(
+      (k, v) => MapEntry(k, v.join(', ')),
+    );
 
     switch (e.type) {
       case dio.DioExceptionType.connectionTimeout:
       case dio.DioExceptionType.sendTimeout:
       case dio.DioExceptionType.receiveTimeout:
         return NetworkResponse.failure(
-          exception: NetworkTimeoutException('Request timed out',
-              originalError: e),
+          exception: NetworkTimeoutException(
+            'Request timed out',
+            originalError: e,
+          ),
           responseHeaders: responseHeaders,
         );
 
       case dio.DioExceptionType.connectionError:
         return NetworkResponse.failure(
-          exception: NoConnectionException('No internet connection',
-              originalError: e),
+          exception: NoConnectionException(
+            'No internet connection',
+            originalError: e,
+          ),
         );
 
       case dio.DioExceptionType.badCertificate:
         return NetworkResponse.failure(
-          exception:
-              SslException('SSL certificate error', originalError: e),
+          exception: SslException('SSL certificate error', originalError: e),
         );
 
       case dio.DioExceptionType.cancel:
         return NetworkResponse.failure(
-          exception: RequestCancelledException('Request cancelled',
-              originalError: e),
+          exception: RequestCancelledException(
+            'Request cancelled',
+            originalError: e,
+          ),
         );
 
       case dio.DioExceptionType.badResponse:
@@ -466,16 +477,21 @@ class DioNetworkCaller implements NetworkInterface {
         return NetworkResponse.failure(
           statusCode: resp?.statusCode,
           message: e.message,
-          exception: NetworkException(e.message ?? 'Bad response',
-              statusCode: resp?.statusCode, originalError: e),
+          exception: NetworkException(
+            e.message ?? 'Bad response',
+            statusCode: resp?.statusCode,
+            originalError: e,
+          ),
           responseHeaders: responseHeaders,
         );
 
       case dio.DioExceptionType.unknown:
         return NetworkResponse.failure(
           message: e.message,
-          exception: NetworkException(e.message ?? 'Unknown error',
-              originalError: e),
+          exception: NetworkException(
+            e.message ?? 'Unknown error',
+            originalError: e,
+          ),
         );
     }
   }
@@ -493,14 +509,16 @@ class DioNetworkCaller implements NetworkInterface {
   }
 
   Map<String, String> _extractHeaders(dio.Response response) {
-    return response.headers.map
-        .map((key, values) => MapEntry(key, values.join(', ')));
+    return response.headers.map.map(
+      (key, values) => MapEntry(key, values.join(', ')),
+    );
   }
 
   void _throwIfDisposed() {
     if (_disposed) {
       throw StateError(
-          'DioNetworkCaller has been disposed and cannot be used.');
+        'DioNetworkCaller has been disposed and cannot be used.',
+      );
     }
   }
 }

@@ -8,8 +8,10 @@ import 'package:network_caller_core/src/models/error_response.dart';
 ///
 /// Return a record with [accessToken] and optionally [refreshToken].
 /// Defaults to reading `body['access_token']` and `body['refresh_token']`.
-typedef TokenExtractor = ({String? accessToken, String? refreshToken}) Function(
-    Map<String, dynamic> body);
+typedef TokenExtractor =
+    ({String? accessToken, String? refreshToken}) Function(
+      Map<String, dynamic> body,
+    );
 
 /// Extracts a specific field from the response body before passing to the parser.
 ///

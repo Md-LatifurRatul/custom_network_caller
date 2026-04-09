@@ -11,6 +11,8 @@ workspace:
   - packages/network_caller_core
   - packages/network_caller_http
   - packages/network_caller_dio
+  - packages/network_caller_http/example
+  - packages/network_caller_dio/example
 
 dependencies:
   flutter:

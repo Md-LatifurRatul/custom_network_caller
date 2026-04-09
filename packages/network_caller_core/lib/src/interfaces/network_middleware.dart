@@ -44,9 +44,5 @@ class NetworkMiddleware {
   /// Called on error. Inspect or log the error.
   final Future<void> Function(dynamic error)? onError;
 
-  const NetworkMiddleware({
-    this.onRequest,
-    this.onResponse,
-    this.onError,
-  });
+  const NetworkMiddleware({this.onRequest, this.onResponse, this.onError});
 }

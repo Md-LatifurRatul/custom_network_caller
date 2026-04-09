@@ -7,17 +7,9 @@ class ErrorResponse {
   final int? statusCode;
   final dynamic details;
 
-  const ErrorResponse({
-    this.message,
-    this.statusCode,
-    this.details,
-  });
+  const ErrorResponse({this.message, this.statusCode, this.details});
 
-  ErrorResponse copyWith({
-    String? message,
-    int? statusCode,
-    dynamic details,
-  }) {
+  ErrorResponse copyWith({String? message, int? statusCode, dynamic details}) {
     return ErrorResponse(
       message: message ?? this.message,
       statusCode: statusCode ?? this.statusCode,

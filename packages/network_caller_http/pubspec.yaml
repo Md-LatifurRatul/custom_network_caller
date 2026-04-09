@@ -1,8 +1,11 @@
 name: network_caller_http
-description: HTTP implementation of network_caller using package:http. Handles tokens, retry, logging, cancellation — zero boilerplate.
+description: >-
+  Production-ready HTTP networking for Flutter using package:http.
+  Auto-handles tokens, refresh, retry, logging, and typed errors.
 version: 1.0.0
 homepage: https://github.com/Md-LatifurRatul/custom_network_caller
 repository: https://github.com/Md-LatifurRatul/custom_network_caller/tree/main/packages/network_caller_http
+issue_tracker: https://github.com/Md-LatifurRatul/custom_network_caller/issues
 topics:
   - networking
   - http

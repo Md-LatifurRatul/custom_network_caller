@@ -62,10 +62,7 @@ void main() {
 
   group('BasicAuthStrategy', () {
     test('adds Basic auth header', () async {
-      const strategy = BasicAuthStrategy(
-        username: 'admin',
-        password: 'secret',
-      );
+      const strategy = BasicAuthStrategy(username: 'admin', password: 'secret');
       final headers = await strategy.buildAuthHeaders(tokenManager);
       final expected = base64Encode(utf8.encode('admin:secret'));
       expect(headers['Authorization'], 'Basic $expected');
@@ -78,10 +75,7 @@ void main() {
       final strategy = CustomAuthStrategy(
         headerBuilder: (tm) async {
           final token = await tm.getAccessToken();
-          return {
-            'X-Custom': token ?? '',
-            'X-Tenant': 'tenant-1',
-          };
+          return {'X-Custom': token ?? '', 'X-Tenant': 'tenant-1'};
         },
       );
 

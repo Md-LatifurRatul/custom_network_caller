@@ -1,299 +1,151 @@
-## 📡 Flutter Network Caller (HTTP + Dio)
+<p align="center">
+  <h1 align="center">Network Caller</h1>
+  <p align="center">
+    <strong>Production-ready networking for Flutter. Zero boilerplate.</strong><br>
+    Choose <code>http</code> or <code>dio</code> — everything else is handled for you.
+  </p>
+</p>
 
-A clean, extensible, production-ready networking layer for Flutter projects.  
-This package provides **two fully independent network callers**:
-
-- **`HttpNetworkCaller`** – lightweight, built on `http`
-- **`DioNetworkCaller`** – powerful, with interceptors & retries
-
-
----
-
-## 📁 Folder Structure
-```plaintext
-lib/
-  services/
-    network/
-      network_interface.dart
-      network_config.dart
-      token_manager.dart
-      http_network_caller.dart
-      dio_network_caller.dart
-      token_interceptor_dio.dart
-```
+<p align="center">
+  <a href="https://pub.dev/packages/network_caller_http"><img src="https://img.shields.io/pub/v/network_caller_http.svg?label=network_caller_http" alt="HTTP package"></a>
+  <a href="https://pub.dev/packages/network_caller_dio"><img src="https://img.shields.io/pub/v/network_caller_dio.svg?label=network_caller_dio" alt="Dio package"></a>
+  <a href="https://github.com/Md-LatifurRatul/custom_network_caller"><img src="https://img.shields.io/github/license/Md-LatifurRatul/custom_network_caller" alt="License"></a>
+  <img src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20macOS%20%7C%20Windows%20%7C%20Linux-blue" alt="Platform">
+</p>
 
 ---
 
-## 🚀 Features
+## Why Network Caller?
 
-### 🔐 Token System (Optional)
-- Save access token
-- Save refresh token
-- Auto-add token when `withToken: true`
-- Auto-refresh expired token
-- Auto-logout callback
-- Secure storage
+| Problem | Network Caller Solution |
+|---------|------------------------|
+| Writing the same networking boilerplate in every project | Configure once, use everywhere |
+| Token management scattered across files | Built-in secure token storage with auto-refresh |
+| No typed errors — checking string messages | 10 typed exceptions with pattern matching |
+| Pulling in `dio` when you only need `http` | Choose one — zero unnecessary dependencies |
+| Different error handling per project | Consistent `NetworkResponse<T>` across all calls |
+| Manual retry logic | Configurable exponential backoff with `Retry-After` |
 
-### 🌐 Networking
-- `GET` / `POST` / `PUT` / `PATCH` / `DELETE`
-- JSON body & response
-- Custom headers
-- Timeout handling
-- Built-in error formatting
-- Automatic parsing with custom parser
+## Packages
 
----
+This is a **federated monorepo** — pick the one you need:
 
-## ⚙️ 1. Setup
+| Package | Description | Pub |
+|---------|-------------|-----|
+| [`network_caller_http`](packages/network_caller_http/) | Implementation using `package:http` | [![pub](https://img.shields.io/pub/v/network_caller_http.svg)](https://pub.dev/packages/network_caller_http) |
+| [`network_caller_dio`](packages/network_caller_dio/) | Implementation using `package:dio` | [![pub](https://img.shields.io/pub/v/network_caller_dio.svg)](https://pub.dev/packages/network_caller_dio) |
+| [`network_caller_core`](packages/network_caller_core/) | Shared interfaces and models (auto-included) | [![pub](https://img.shields.io/pub/v/network_caller_core.svg)](https://pub.dev/packages/network_caller_core) |
 
-### 1.1 Add dependencies
+## Quick Start
+
+### 1. Install
+
 ```yaml
+# Pick ONE:
 dependencies:
-  http: 
-  dio:
-  flutter_secure_storage: 
+  network_caller_http: ^1.0.0   # uses package:http
+  # OR
+  network_caller_dio: ^1.0.0    # uses package:dio
 ```
 
-### ⛽ 1.2 `network_config.dart`
+### 2. Configure (once)
+
 ```dart
-class NetworkConfig {
-  static const baseUrl = 'https://api.some-example.com';
+import 'package:network_caller_http/network_caller_http.dart';
+// OR: import 'package:network_caller_dio/network_caller_dio.dart';
 
-  static const defaultHeaders = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-
-  static const timeout = Duration(seconds: 15);
-}
+final caller = HttpNetworkCaller(  // or DioNetworkCaller
+  config: const NetworkConfig(baseUrl: 'https://api.example.com'),
+  tokenStorage: SecureTokenStorage(),
+);
 ```
 
-### 🔑 1.3 Token Manager
-> Manages access & refresh tokens.
+### 3. Use
 
 ```dart
-class TokenManager {
-  static const _accessTokenKey = 'accessToken';
-  static const _refreshTokenKey = 'refreshToken';
-
-  static Future<void> saveAccessToken(String token) async {}
-  static Future<void> saveRefreshToken(String token) async {}
-
-  static Future<String?> getAccessToken() async {}
-  static Future<String?> getRefreshToken() async {}
-
-  static Future<void> clearTokens() async {}
-}
-```
-
----
-
-## 🔌 2. Usage Examples
-
----
-
-### 🟦 HTTP Caller (Simple & Lightweight)
-
-#### Import
-```dart
-final httpCaller = HttpNetworkCaller();
-```
-
-#### 📥 GET Request
-```dart
-final res = await httpCaller.getRequest(
+// GET with model parsing
+final res = await caller.get<User>(
   url: '/profile',
   withToken: true,
-);
-
-if (res.success) {
-  print(res.data);
-} else {
-  print(res.message);
-}
-```
-
-#### 📤 POST Request
-```dart
-final res = await httpCaller.postRequest(
-  url: '/login',
-  body: {
-    'email': 'demo@mail.com',
-    'password': '123456',
-  },
   parser: (json) => User.fromJson(json),
 );
 
-if (res.success) {
-  final user = res.data;
+if (res.isSuccess) {
+  final user = res.data!;
 }
 ```
 
-#### 🚫 Logout (token clear)
-```dart
-await TokenManager.clearTokens();
+That's it. Tokens, refresh, errors, retry — all handled internally.
+
+## Feature Overview
+
+| Feature | Status |
+|---------|--------|
+| GET / POST / PUT / PATCH / DELETE | Built-in |
+| Generic `<T>` response parsing | Built-in |
+| Bearer / API Key / Basic / Custom Auth | Built-in |
+| Auto token refresh on 401 | Built-in |
+| Concurrent refresh lock (Completer) | Built-in |
+| Typed exceptions (10 types) | Built-in |
+| Retry with exponential backoff | Configurable |
+| `Retry-After` header support (429) | Automatic |
+| Request cancellation | Built-in |
+| Per-request timeout override | Built-in |
+| Query parameters | Built-in |
+| Response headers access | Built-in |
+| Multipart file upload with progress | Built-in |
+| Request/response logging | Configurable |
+| Middleware (HTTP) / Interceptors (Dio) | Built-in |
+| ResponseType (JSON / plain / bytes) | Built-in |
+| Form URL-encoded body | Auto-detected |
+| Wrapped API unwrapping | Configurable |
+| Custom error parsing | Configurable |
+| Custom success status codes | Configurable |
+| Secure token storage | Built-in |
+| Resource cleanup (dispose) | Built-in |
+
+## Platform Support
+
+| Android | iOS | Web | macOS | Windows | Linux |
+|:-------:|:---:|:---:|:-----:|:-------:|:-----:|
+|    ✅    |  ✅  |  ✅  |   ✅   |    ✅    |   ✅   |
+
+## Architecture
+
 ```
+network_caller_core        ← Pure Dart, zero dependencies
+       ↑                          ↑
+network_caller_http       network_caller_dio
+(package:http)            (package:dio)
+```
+
+- **Core** defines interfaces, models, config, exceptions
+- **HTTP/Dio** implement the `NetworkInterface` contract
+- Consumer imports **one** package — core is re-exported automatically
+
+## Documentation
+
+- [HTTP Package README](packages/network_caller_http/README.md) — full API reference with examples
+- [Dio Package README](packages/network_caller_dio/README.md) — full API reference with examples
+- [Core Package README](packages/network_caller_core/README.md) — interfaces and types reference
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-### 🔶 DIO Caller (Advanced & Powerful)
-
-#### Import
-```dart
-final dioCaller = DioNetworkCaller();
-```
-
-#### 📥 GET Request
-```dart
-final res = await dioCaller.getRequest(
-  url: '/dashboard',
-  withToken: true,
-);
-
-if (res.success) {
-  print(res.data);
-}
-```
-
-#### 📤 POST Request
-```dart
-final res = await dioCaller.postRequest(
-  url: '/post',
-  body: {
-    'title': 'Hello World',
-    'description': 'This is new',
-  },
-);
-```
-
-#### 🔄 Automatic Token Refresh
-> When API returns `401`, Dio interceptor automatically:
-> - Uses the refresh token
-> - Requests a new access token
-> - Saves it
-> - Retries the original request
-
-> **You don’t do anything manually.**
-
-#### 🧹 Auto Logout on Refresh Failure
-```dart
-dioCaller.onLogout = () {
-  // Navigate to login page
-};
-```
-
----
-
-## 🧪 3. Parsing Example
-
-### Model
-```dart
-class User {
-  final int id;
-  final String name;
-
-  User({required this.id, required this.name});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(id: json['id'], name: json['name']);
-  }
-}
-```
-
-### Usage
-```dart
-final response = await httpCaller.getRequest(
-  url: '/user',
-  parser: (json) => User.fromJson(json),
-);
-
-final user = response.data;
-```
-
----
-
-## 🛠 4. Error Handling
-
-### Response wrapper structure:
-```dart
-class NetworkResponse<T> {
-  bool success;
-  T? data;
-  String? message;
-  int? statusCode;
-
-  NetworkResponse({
-    required this.success,
-    this.data,
-    this.message,
-    this.statusCode,
-  });
-}
-```
-
----
-
-## 🧵 5. Common Examples
-
-### Custom Header
-```dart
-await dioCaller.getRequest(
-  url: '/test',
-  headers: {'x-id': '123'},
-);
-```
-
-### Disable Token Authentication
-```dart
-await httpCaller.getRequest(
-  url: '/public-api',
-  withToken: false,
-);
-```
-
-### Upload Image (Dio Recommended)
-```dart
-await dioCaller.postRequest(
-  url: '/upload',
-  body: FormData.fromMap({
-    'photo': await MultipartFile.fromFile(path),
-  }),
-);
-```
-
----
-
-## 🧩 6. Best Practices
-
-| Prefer **Dio** for: | Prefer **HTTP** for: |
-|---------------------|------------------------|
-| ✔ interceptors, refresh, retries | ✔ simple requests |
-| ✔ uploads/downloads | ✔ small apps |
-| ✔ large production apps | ✔ lower dependency count |
-
-> - Keep `NetworkInterface` stable  
-> - Model parsing in separate files  
-> - Avoid logic in UI  
-> - Auto-refresh only inside Dio caller
-
----
-
-## 🧰 7. Example Project Structure
-```plaintext
-lib/
-  models/
-    user.dart
-  services/
-    network/
-      network_interface.dart
-      http_network_caller.dart
-      dio_network_caller.dart
-      token_manager.dart
-    repositories/
-      auth_repository.dart
-  pages/
-    login_page.dart
-    home_page.dart
-```
-
----
+<p align="center">
+  Made with Dart & Flutter<br>
+  <a href="https://github.com/Md-LatifurRatul/custom_network_caller">GitHub</a>
+</p>
