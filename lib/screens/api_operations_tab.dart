@@ -2,9 +2,9 @@ import 'package:adapti_flow/adapti_flow.dart';
 import 'package:flutter/material.dart';
 import 'package:network_call/model/post.dart';
 import 'package:network_call/model/user.dart';
-import 'package:network_call/services/network/network_interface.dart';
 import 'package:network_call/utils.dart/api_url.dart';
 import 'package:network_call/widgets/operation_card.dart';
+import 'package:network_caller_http/network_caller_http.dart';
 
 class ApiOperationsTab extends StatelessWidget {
   final NetworkInterface caller;
@@ -35,7 +35,7 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Fetch list of posts (parsed)',
             method: 'GET',
             callerLabel: callerLabel,
-            onExecute: () => caller.getRequest<List<Post>>(
+            onExecute: () => caller.get<List<Post>>(
               url: ApiUrl.posts,
               parser: (json) =>
                   (json as List).map((e) => Post.fromJson(e)).toList(),
@@ -46,7 +46,7 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Fetch post #1 as model',
             method: 'GET',
             callerLabel: callerLabel,
-            onExecute: () => caller.getRequest<Post>(
+            onExecute: () => caller.get<Post>(
               url: ApiUrl.postById(1),
               parser: (json) => Post.fromJson(json),
             ),
@@ -56,7 +56,7 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Fetch all users (different model)',
             method: 'GET',
             callerLabel: callerLabel,
-            onExecute: () => caller.getRequest<List<User>>(
+            onExecute: () => caller.get<List<User>>(
               url: ApiUrl.users,
               parser: (json) =>
                   (json as List).map((e) => User.fromJson(e)).toList(),
@@ -67,14 +67,14 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Fetch post #2 as raw Map',
             method: 'GET',
             callerLabel: callerLabel,
-            onExecute: () => caller.getRequest(url: ApiUrl.postById(2)),
+            onExecute: () => caller.get(url: ApiUrl.postById(2)),
           ),
           OperationCard(
             title: 'POST Create',
             subtitle: 'Create a new post',
             method: 'POST',
             callerLabel: callerLabel,
-            onExecute: () => caller.postRequest<Post>(
+            onExecute: () => caller.post<Post>(
               url: ApiUrl.posts,
               body: const Post(userId: 1, title: 'New Post', body: 'Hello!')
                   .toJson(),
@@ -86,7 +86,7 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Full update post #1',
             method: 'PUT',
             callerLabel: callerLabel,
-            onExecute: () => caller.putRequest<Post>(
+            onExecute: () => caller.put<Post>(
               url: ApiUrl.postById(1),
               body: const Post(
                 userId: 1,
@@ -101,7 +101,7 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Partial update post #1 title',
             method: 'PATCH',
             callerLabel: callerLabel,
-            onExecute: () => caller.patchRequest<Post>(
+            onExecute: () => caller.patch<Post>(
               url: ApiUrl.postById(1),
               body: {'title': 'Patched Title Only'},
               parser: (json) => Post.fromJson(json),
@@ -112,7 +112,7 @@ class ApiOperationsTab extends StatelessWidget {
             subtitle: 'Delete post #1',
             method: 'DELETE',
             callerLabel: callerLabel,
-            onExecute: () => caller.deleteRequest(url: ApiUrl.postById(1)),
+            onExecute: () => caller.delete(url: ApiUrl.postById(1)),
           ),
         ],
       ),

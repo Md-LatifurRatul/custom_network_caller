@@ -1,10 +1,12 @@
 import 'package:adapti_flow/adapti_flow.dart';
 import 'package:flutter/material.dart';
-import 'package:network_call/model/token_manager.dart';
 import 'package:network_call/widgets/token_row.dart';
+import 'package:network_caller_http/network_caller_http.dart';
 
 class TokenManagementTab extends StatefulWidget {
-  const TokenManagementTab({super.key});
+  final TokenManager tokenManager;
+
+  const TokenManagementTab({super.key, required this.tokenManager});
 
   @override
   State<TokenManagementTab> createState() => _TokenManagementTabState();
@@ -17,7 +19,7 @@ class _TokenManagementTabState extends State<TokenManagementTab> {
   Color _statusColor = Colors.grey;
 
   Future<void> _saveTokens() async {
-    await TokenManager.saveTokens(
+    await widget.tokenManager.saveTokens(
       accessToken: 'demo_access_token_${DateTime.now().millisecondsSinceEpoch}',
       refreshToken:
           'demo_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
@@ -30,8 +32,8 @@ class _TokenManagementTabState extends State<TokenManagementTab> {
   }
 
   Future<void> _readTokens() async {
-    final access = await TokenManager.getAccessToken();
-    final refresh = await TokenManager.getRefreshToken();
+    final access = await widget.tokenManager.getAccessToken();
+    final refresh = await widget.tokenManager.getRefreshToken();
     setState(() {
       _accessToken = access ?? '(null)';
       _refreshToken = refresh ?? '(null)';
@@ -41,7 +43,7 @@ class _TokenManagementTabState extends State<TokenManagementTab> {
   }
 
   Future<void> _clearTokens() async {
-    await TokenManager.clearTokens();
+    await widget.tokenManager.clearTokens();
     setState(() {
       _accessToken = '(null)';
       _refreshToken = '(null)';

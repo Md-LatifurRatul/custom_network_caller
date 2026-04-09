@@ -16,10 +16,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  http: ^1.5.0
-  flutter_secure_storage: ^9.2.4
-  dio: ^5.9.0
   adapti_flow: ^1.0.0
+  # Use our packages (http & dio pulled transitively)
+  network_caller_http:
+    path: packages/network_caller_http
+  network_caller_dio:
+    path: packages/network_caller_dio
 
 dev_dependencies:
   flutter_test:
