@@ -1,6 +1,6 @@
 name: network_caller_http
 description: "Production-ready HTTP networking for Flutter. Auto-handles tokens, refresh, retry, logging, and typed errors."
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/Md-LatifurRatul/custom_network_caller
 repository: https://github.com/Md-LatifurRatul/custom_network_caller/tree/main/packages/network_caller_http
 issue_tracker: https://github.com/Md-LatifurRatul/custom_network_caller/issues
@@ -21,10 +21,10 @@ dependencies:
   flutter:
     sdk: flutter
   network_caller_core: ^1.0.0
-  http: ^1.5.0
-  flutter_secure_storage: ^9.2.4
+  http: ">=1.5.0 <3.0.0"
+  flutter_secure_storage: ">=9.2.4 <11.0.0"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  lints: ^5.1.0
+  lints: ">=5.1.0 <7.0.0"

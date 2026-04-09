@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Widened dependency constraints to support latest versions
+
 ## 1.0.0
 
 - Initial release

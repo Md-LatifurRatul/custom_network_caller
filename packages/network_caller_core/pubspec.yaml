@@ -1,6 +1,6 @@
 name: network_caller_core
 description: "Core interfaces, models, and typed exceptions for the network_caller federation. Pure Dart, zero dependencies."
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/Md-LatifurRatul/custom_network_caller
 repository: https://github.com/Md-LatifurRatul/custom_network_caller/tree/main/packages/network_caller_core
 issue_tracker: https://github.com/Md-LatifurRatul/custom_network_caller/issues
@@ -17,5 +17,5 @@ environment:
   sdk: ^3.9.0
 
 dev_dependencies:
-  lints: ^5.1.0
-  test: ^1.25.0
+  lints: ">=5.1.0 <7.0.0"
+  test: ">=1.25.0 <2.0.0"
