@@ -10,6 +10,7 @@ environment:
 workspace:
   - packages/network_caller_core
   - packages/network_caller_http
+  - packages/network_caller_dio
 
 dependencies:
   flutter:
